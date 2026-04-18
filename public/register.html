@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Register for E-Vote — Create your voter account">
+  <title>Register — E-Vote System</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-container animate-fade-in-up">
+      <!-- Header -->
+      <div class="auth-header">
+        <div class="auth-icon">📝</div>
+        <h1 class="auth-title">Create Account</h1>
+        <p class="auth-subtitle">Register as a voter in the E-Vote system</p>
+      </div>
+
+      <!-- Form Card -->
+      <div class="auth-form">
+        <form id="register-form">
+          <div class="form-group">
+            <label for="reg-name">Full Name</label>
+            <div class="input-with-icon">
+              <span class="input-icon">👤</span>
+              <input type="text" id="reg-name" class="input-field" placeholder="John Doe" required minlength="2" maxlength="50">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="reg-email">Email Address</label>
+            <div class="input-with-icon">
+              <span class="input-icon">📧</span>
+              <input type="email" id="reg-email" class="input-field" placeholder="voter@example.com" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="reg-password">Password</label>
+            <div class="input-with-icon">
+              <span class="input-icon">🔒</span>
+              <input type="password" id="reg-password" class="input-field" placeholder="Min 6 chars (Aa+123)" required minlength="6">
+            </div>
+            <p class="text-xs mt-2" style="color: var(--text-muted);">Must contain uppercase, lowercase, and a number</p>
+          </div>
+
+          <button type="submit" id="register-submit" class="btn-primary w-full mt-2">
+            Create Account
+          </button>
+        </form>
+
+        <div class="text-center mt-6">
+          <p class="text-sm" style="color: var(--text-muted);">
+            Already have an account?
+            <a href="/index.html" style="color: var(--primary-500); font-weight: 600;">Sign in</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/register.js"></script>
+</body>
+</html>

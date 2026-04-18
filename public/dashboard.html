@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Voter Dashboard — View and participate in elections">
+  <title>Dashboard — E-Vote System</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Top Header -->
+    <header class="top-header" id="top-header">
+      <div class="top-header-left">
+        <button class="mobile-menu-btn" onclick="toggleMobileSidebar()">☰</button>
+      </div>
+      <div class="top-header-right"></div>
+    </header>
+
+    <!-- Page Body -->
+    <div class="page-body">
+      <!-- Welcome Header -->
+      <div id="welcome-header" class="mb-8 animate-slide-down"></div>
+
+      <!-- Quick Stats -->
+      <div id="stats-section" class="stats-grid"></div>
+
+      <!-- Loading State -->
+      <div id="loading" class="loading-container">
+        <div class="spinner"></div>
+      </div>
+
+      <!-- Elections Content -->
+      <div id="elections-content" class="hidden"></div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>
