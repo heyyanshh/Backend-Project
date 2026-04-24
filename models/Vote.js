@@ -28,6 +28,9 @@ const voteSchema = new mongoose.Schema({
   timestamp: {
     type: Date,
     default: Date.now
+  },
+  timestampISO: {
+    type: String
   }
 }, {
   timestamps: true

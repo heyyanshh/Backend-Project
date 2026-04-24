@@ -4,6 +4,7 @@ const User = require('../models/User');
 const Vote = require('../models/Vote');
 const AuditLog = require('../models/AuditLog');
 const { createAuditLog, getClientIP } = require('../utils/helpers');
+const { getElectionAnalytics } = require('../utils/analytics');
 
 // @desc    Add candidate to an election
 // @route   POST /api/admin/candidates
@@ -45,6 +46,12 @@ exports.addCandidate = async (req, res) => {
       name,
       electionId
     }, getClientIP(req));
+
+    // Emit real-time event
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('candidate_added', { electionId, candidate });
+    }
 
     res.status(201).json({
       success: true,
@@ -235,6 +242,33 @@ exports.getStats = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Could not retrieve statistics.'
+    });
+  }
+};
+
+// @desc    Get AI-powered election analytics
+// @route   GET /api/admin/analytics/:electionId
+// @access  Private (Admin only)
+exports.getAnalytics = async (req, res) => {
+  try {
+    const analytics = await getElectionAnalytics(req.params.electionId);
+
+    if (!analytics) {
+      return res.status(404).json({
+        success: false,
+        message: 'Election not found.'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: analytics
+    });
+  } catch (error) {
+    console.error('Analytics error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Could not generate analytics.'
     });
   }
 };

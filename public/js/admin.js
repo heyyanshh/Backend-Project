@@ -108,6 +108,7 @@
 
       <div class="flex flex-wrap gap-3 mb-8 animate-fade-in delay-5">
         <a href="/elections.html" class="btn-primary">📋 Manage Elections</a>
+        <a href="/analytics.html" class="btn-secondary">🤖 AI Analytics</a>
         <a href="/audit.html" class="btn-secondary">🔍 View Audit Logs</a>
       </div>
 

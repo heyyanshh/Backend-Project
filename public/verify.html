@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Public Verification Portal — Verify your vote hash independently">
+  <title>Verify Your Vote — E-Vote System</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-container animate-fade-in-up" style="max-width: 560px;">
+      <!-- Header -->
+      <div class="auth-header">
+        <div class="auth-icon">🔍</div>
+        <h1 class="auth-title">Public Verification Portal</h1>
+        <p class="auth-subtitle">Paste your vote hash below to independently verify your vote exists and is untampered</p>
+      </div>
+
+      <!-- Verification Form -->
+      <div class="auth-form">
+        <form id="verify-form">
+          <div class="form-group">
+            <label for="vote-hash-input">Vote Hash (64-character SHA-256)</label>
+            <div class="input-with-icon">
+              <span class="input-icon">🔐</span>
+              <input type="text" id="vote-hash-input" class="input-field" placeholder="Paste your vote hash here..." required minlength="64" maxlength="64" style="font-family: monospace; font-size: 0.85rem;">
+            </div>
+          </div>
+
+          <button type="submit" id="verify-submit" class="btn-primary w-full mt-2">
+            🔍 Verify Vote
+          </button>
+        </form>
+
+        <!-- Result Area -->
+        <div id="verify-result" style="margin-top: 24px;"></div>
+
+        <div class="text-center mt-6">
+          <p class="text-sm" style="color: var(--text-muted);">
+            Have an account?
+            <a href="/index.html" style="color: var(--primary-500); font-weight: 600;">Sign in</a>
+          </p>
+        </div>
+
+        <!-- Info Box -->
+        <div class="demo-credentials" style="margin-top: 20px;">
+          <p class="demo-credentials-title">How it works</p>
+          <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">
+            When you cast a vote, you receive a unique SHA-256 hash as a digital receipt. 
+            Paste it here to confirm your vote is recorded in the system and has not been tampered with.
+            <strong>No login is required.</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    // Apply theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    document.getElementById('verify-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const hash = document.getElementById('vote-hash-input').value.trim();
+      const btn = document.getElementById('verify-submit');
+      const resultDiv = document.getElementById('verify-result');
+      
+      if (hash.length !== 64) {
+        resultDiv.innerHTML = `
+          <div class="card" style="padding: 20px; border-left: 4px solid #f59e0b;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+              <div style="font-size: 1.5rem;">⚠️</div>
+              <h3 style="color: #f59e0b; font-size: 1.1rem; font-weight: 700; margin: 0;">Invalid Hash</h3>
+            </div>
+            <p style="color: var(--text-secondary); font-size: 0.9rem;">Please provide a valid 64-character SHA-256 hash.</p>
+          </div>
+        `;
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner spinner-sm"></div> Verifying...';
+      
+      try {
+        const response = await fetch('/api/votes/public-verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ voteHash: hash })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.success && data.data.exists) {
+          // Vote found and verified
+          const isIntact = data.data.isIntact;
+          if (isIntact) {
+            resultDiv.innerHTML = `
+              <div class="card" style="padding: 20px; border-left: 4px solid #10b981;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                  <div style="font-size: 1.5rem;">✅</div>
+                  <h3 style="color: #10b981; font-size: 1.1rem; font-weight: 700; margin: 0;">Vote Verified!</h3>
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: 12px; font-size: 0.9rem;">${data.message}</p>
+                <div style="background: var(--gray-50); border-radius: 8px; padding: 14px;">
+                  <p style="font-size: 0.85rem; margin: 4px 0; color: var(--text-primary);"><strong>Election:</strong> ${data.data.electionTitle}</p>
+                  <p style="font-size: 0.85rem; margin: 4px 0; color: var(--text-primary);"><strong>Status:</strong> ${data.data.electionStatus}</p>
+                  <p style="font-size: 0.85rem; margin: 4px 0; color: var(--text-primary);"><strong>Voted For:</strong> <span style="color: #10b981; font-weight: 600;">${data.data.candidateName}</span> ${data.data.candidateParty ? `(${data.data.candidateParty})` : ''}</p>
+                  <p style="font-size: 0.85rem; margin: 4px 0; color: var(--text-primary);"><strong>Timestamp:</strong> ${new Date(data.data.timestamp).toLocaleString()}</p>
+                  <p style="font-size: 0.85rem; margin: 4px 0; color: #10b981; font-weight: 600;">🛡️ Hash Chain Integrity: Valid</p>
+                </div>
+              </div>
+            `;
+          } else {
+            resultDiv.innerHTML = `
+              <div class="card" style="padding: 20px; border-left: 4px solid #ef4444;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                  <div style="font-size: 1.5rem;">❌</div>
+                  <h3 style="color: #ef4444; font-size: 1.1rem; font-weight: 700; margin: 0;">Integrity Warning!</h3>
+                </div>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">${data.message}</p>
+              </div>
+            `;
+          }
+        } else {
+          // Vote not found or error
+          const msg = data.message || 'Verification failed.';
+          resultDiv.innerHTML = `
+            <div class="card" style="padding: 20px; border-left: 4px solid #f59e0b;">
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                <div style="font-size: 1.5rem;">⚠️</div>
+                <h3 style="color: #f59e0b; font-size: 1.1rem; font-weight: 700; margin: 0;">Vote Not Found</h3>
+              </div>
+              <p style="color: var(--text-secondary); font-size: 0.9rem;">${msg}</p>
+            </div>
+          `;
+        }
+      } catch (error) {
+        resultDiv.innerHTML = `
+          <div class="card" style="padding: 20px; border-left: 4px solid #ef4444;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+              <div style="font-size: 1.5rem;">❌</div>
+              <h3 style="color: #ef4444; font-size: 1.1rem; font-weight: 700; margin: 0;">Network Error</h3>
+            </div>
+            <p style="color: var(--text-secondary); font-size: 0.9rem;">Could not connect to the server. Please check your connection and try again.</p>
+          </div>
+        `;
+      }
+      
+      btn.disabled = false;
+      btn.innerHTML = '🔍 Verify Vote';
+    });
+  </script>
+</body>
+</html>

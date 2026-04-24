@@ -107,6 +107,10 @@ function renderSidebar(activePage) {
           <span class="sidebar-link-icon">📋</span>
           Elections
         </a>
+        <a href="/analytics.html" class="sidebar-link ${activePage === 'analytics' ? 'active' : ''}">
+          <span class="sidebar-link-icon">🤖</span>
+          AI Analytics
+        </a>
         <a href="/audit.html" class="sidebar-link ${activePage === 'audit' ? 'active' : ''}">
           <span class="sidebar-link-icon">🔍</span>
           Audit Logs
@@ -118,8 +122,28 @@ function renderSidebar(activePage) {
       <div class="sidebar-section-label">Main</div>
       <nav class="sidebar-nav">
         <a href="/dashboard.html" class="sidebar-link ${activePage === 'dashboard' ? 'active' : ''}">
-          <span class="sidebar-link-icon">📊</span>
+          <span class="sidebar-link-icon">\ud83d\udcca</span>
           Dashboard
+        </a>
+      </nav>
+
+      <div class="sidebar-section-label">Quick Actions</div>
+      <nav class="sidebar-nav">
+        <a href="/dashboard.html#active" class="sidebar-link ${activePage === 'elections' ? 'active' : ''}">
+          <span class="sidebar-link-icon">\ud83d\uddf3\ufe0f</span>
+          Cast Vote
+        </a>
+        <a href="/dashboard.html#results" class="sidebar-link ${activePage === 'results' ? 'active' : ''}">
+          <span class="sidebar-link-icon">\ud83d\udcc8</span>
+          Election Results
+        </a>
+      </nav>
+
+      <div class="sidebar-section-label">Account</div>
+      <nav class="sidebar-nav">
+        <a href="/dashboard.html#profile" class="sidebar-link ${activePage === 'profile' ? 'active' : ''}">
+          <span class="sidebar-link-icon">\ud83d\udc64</span>
+          My Profile
         </a>
       </nav>
     `;
@@ -209,7 +233,9 @@ function getPageTitle(page) {
     'elections': 'Elections',
     'audit': 'Audit Logs',
     'vote': 'Cast Your Vote',
-    'results': 'Election Results'
+    'results': 'Election Results',
+    'analytics': 'AI Analytics',
+    'verify': 'Verify Vote'
   };
   return titles[page] || 'Dashboard';
 }
@@ -241,12 +267,17 @@ window.handleSearch = function(e) {
   
   // Define available site sections based on user role
   let sections = [
-    { name: 'Dashboard', url: isAdminUser ? '/admin.html' : '/dashboard.html', icon: '📊' }
+    { name: 'Dashboard', url: isAdminUser ? '/admin.html' : '/dashboard.html', icon: '\ud83d\udcca' }
   ];
   
   if (isAdminUser) {
-    sections.push({ name: 'Elections', url: '/elections.html', icon: '📋' });
-    sections.push({ name: 'Audit Logs', url: '/audit.html', icon: '🔍' });
+    sections.push({ name: 'Elections', url: '/elections.html', icon: '\ud83d\udccb' });
+    sections.push({ name: 'AI Analytics', url: '/analytics.html', icon: '\ud83e\udd16' });
+    sections.push({ name: 'Audit Logs', url: '/audit.html', icon: '\ud83d\udd0d' });
+  } else {
+    sections.push({ name: 'Cast Vote', url: '/dashboard.html#active', icon: '\ud83d\uddf3\ufe0f' });
+    sections.push({ name: 'Election Results', url: '/dashboard.html#results', icon: '\ud83d\udcc8' });
+    sections.push({ name: 'My Profile', url: '/dashboard.html#profile', icon: '\ud83d\udc64' });
   }
 
   // Filter sections

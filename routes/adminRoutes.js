@@ -5,7 +5,8 @@ const {
   removeCandidate,
   getResults,
   getAuditLogs,
-  getStats
+  getStats,
+  getAnalytics
 } = require('../controllers/adminController');
 const protect = require('../middleware/auth');
 const authorize = require('../middleware/rbac');
@@ -19,5 +20,6 @@ router.post('/candidates', protect, authorize('admin'), candidateRules, addCandi
 router.delete('/candidates/:id', protect, authorize('admin'), removeCandidate);
 router.get('/audit-logs', protect, authorize('admin'), getAuditLogs);
 router.get('/stats', protect, authorize('admin'), getStats);
+router.get('/analytics/:electionId', protect, authorize('admin'), getAnalytics);
 
 module.exports = router;

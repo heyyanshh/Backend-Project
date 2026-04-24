@@ -35,6 +35,10 @@ const userSchema = new mongoose.Schema({
   isVerified: {
     type: Boolean,
     default: true
+  },
+  faceDescriptor: {
+    type: [Number],
+    required: false
   }
 }, {
   timestamps: true
