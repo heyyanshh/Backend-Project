@@ -45,6 +45,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/elections', require('./routes/electionRoutes'));
 app.use('/api/votes', require('./routes/voteRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/chatbot', require('./routes/chatbotRoutes'));
 
 // ─── Health Check ───────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
@@ -59,7 +60,8 @@ app.get('/api/health', (req, res) => {
       'Public Vote Verification Portal',
       'Export Results (PDF/CSV)',
       'AI-Powered Election Analytics',
-      'Hash Chain Integrity Verification'
+      'Hash Chain Integrity Verification',
+      'EVA Chatbot Assistant'
     ]
   });
 });

@@ -397,7 +397,9 @@ async function startFaceDetectionLoop(video) {
         } else {
           // 3 seconds elapsed — now compare face descriptors
           const distance = euclideanDist(registeredDescriptor, detection.descriptor);
-          const matchConfidence = Math.max(0, Math.round((1 - distance) * 100));
+          // Scale distance to percentage: face-api.js typical match threshold is 0.6
+          // Formula maps distance 0.6 to 70% confidence to pass the strict threshold check realistically
+          const matchConfidence = Math.max(0, Math.round(100 - (distance * 50)));
           updateConfidence(matchConfidence);
 
           if (matchConfidence >= 70) {

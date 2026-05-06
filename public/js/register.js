@@ -228,9 +228,11 @@ async function submitRegistration() {
 
   } catch (error) {
     closeFaceModal();
-    const msg = error.response?.data?.message || 
-      error.response?.data?.errors?.map(e => e.message).join(', ') || 
-      'Registration failed.';
+    // Prefer specific field-level errors over the generic "Validation failed" message
+    const fieldErrors = error.response?.data?.errors;
+    const msg = (fieldErrors && fieldErrors.length > 0)
+      ? fieldErrors.map(e => e.message).join(', ')
+      : error.response?.data?.message || 'Registration failed.';
     showToast(msg, 'error');
     submitBtn.disabled = false;
     submitBtn.textContent = 'Create Account';
